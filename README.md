@@ -1,5 +1,11 @@
 # Micro-Cluster Lab Using Docker, To Experiment With Spark & Dask on Yarn
-For more details about this project please refer to [my article](https://lemaizi.com/blog/creating-your-own-micro-cluster-lab-using-docker-to-experiment-with-spark-dask-on-yarn/) where I explain the motivations and how to recreate it by yourself.
+
+## Credit to aminelemaiz
+
+For more details about this project please refer to [article](https://lemaizi.com/blog/creating-your-own-micro-cluster-lab-using-docker-to-experiment-with-spark-dask-on-yarn/)
+
+
+### Get Started
 
 ### Project Folder Tree
 
@@ -15,14 +21,15 @@ For more details about this project please refer to [my article](https://lemaizi
 │   ├── slaves
 │   ├── spark-defaults.conf
 │   └── yarn-site.xml
+│   └── hadoop-env.xml
 ├── datasets
-│   ├── alice_in_wonderland.txt
-│   └── iris.csv
+│   ├── private/
+│   └── public
+    │   ├── alice_in_wonderland.txt
+    │   └── iris.csv
 ├── notebooks
-│   ├── Bash-Interface.ipynb
-│   ├── Dask-Yarn.ipynb
-│   ├── Python-Spark.ipynb
-│   └── Scala-Spark.ipynb
+│   ├── PySpark-Yield-Data.ipynb
+│   ├── Dask-Yarn-Yield-Data.ipynb
 └── script_files
     └── bootstrap.sh
 ```
