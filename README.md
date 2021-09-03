@@ -7,11 +7,19 @@ For more details about this project please refer to [article](https://lemaizi.co
 
 ### Get Started
 
+Downloaded geoip datasets from:
+[geoip datasets downloads](https://www.maxmind.com/en/accounts/*/geoip/downloads)
+
 ### Project Folder Tree
 
 ```
 ├── docker-compose.yml
 ├── Dockerfile
+├── bin
+│   ├── fetch-data.sh
+│   ├── restart-etl-service.sh
+│   ├── secure-image.sh
+│   ├── run-adhoc-notebook.sh
 ├── confs
 │   ├── config
 │   ├── core-site.xml
@@ -34,7 +42,11 @@ For more details about this project please refer to [article](https://lemaizi.co
     └── bootstrap.sh
 ```
 
+### Run Microcluster
 
+```bash
+./bin/restart-etl-service.sh
+```
 
 ### Create the base container image
 
