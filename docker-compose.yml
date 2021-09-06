@@ -43,6 +43,21 @@ services:
       cluster-network:
         aliases: 
           - node-slave2
+  api:
+    build: ./api
+    command: uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
+    volumes:
+      - ./src/:/usr/src/app/
+    ports:
+      - 8002:8000
+    image: api:latest
+    container_name: mongo-api
+    hostname: mongo-api
+    networks:
+      cluster-network:
+        aliases: 
+          - mongo-api
+
   mongo:
     image: mongo
     restart: always
