@@ -12,6 +12,11 @@ ENV PYTHONUNBUFFERED 1
 
 # copy requirements file
 COPY ./requirements.txt /usr/src/app/requirements.txt
+# copy project
+COPY ./* /usr/src/app/
+# TODO: 
+COPY . /
+
 
 # install dependencies
 RUN set -eux \
@@ -21,12 +26,8 @@ RUN set -eux \
     && pip install -r /usr/src/app/requirements.txt \
     && rm -rf /root/.cache/pip
 
-# copy project
-COPY . /usr/src/app/
-# TODO: 
-COPY . /
-
 
 EXPOSE 8000
 
-CMD gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0
+CMD gunicorn main:app -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0
+# CMD gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0
