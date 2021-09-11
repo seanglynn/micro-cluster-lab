@@ -1,3 +1,7 @@
 .DS_Store
 datasets/private/*
 api/examples/examples.py
+backupcode
+api/app/server/app_backup.py
+api/app/server/database_backup.py
+bin/mongo.sh
