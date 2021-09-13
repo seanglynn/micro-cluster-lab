@@ -1,10 +1,17 @@
-# Micro-Cluster Lab Using Docker, To Experiment With Spark & Dask on Yarn
-
+# MicroDataCluster with Data API Using Docker (Spark, YARN, HDFS, MongoDB, FastAPI, )
 
 ### Get Started
-
-Downloaded geoip datasets from:
+1. Downloaded geoip datasets from:
 [geoip datasets downloads](https://www.maxmind.com/en/accounts/*/geoip/downloads)
+
+2. Drop data into */root/lab/datasets/*
+
+3. Exec Geolookup
+   
+4. Exec PySparkYieldData
+
+5. Hit API http://localhost:8002/
+
 
 ### Project Folder Tree
 
@@ -46,19 +53,19 @@ Downloaded geoip datasets from:
 ```
 
 ### Run Microcluster
-
+Builds containers and spins up docker-compose cluster
 ```bash
 ./bin/restart-etl-service.sh
 ```
 
 ### Create the compute container image
-
+Manually build cluster base image
 ```bash
 docker build . -t cluster-base
 ```
 
 ### Create the api container image
-
+Manually build api image
 ```bash
 docker build ./api -t api
 ```
@@ -84,6 +91,25 @@ UserGeo Mongo API:
 http://localhost:8002/
 
 
+### REST Requests
+
+```bash
+# Get All Users in collection
+http://localhost:8002/user
+
+# Get Users within time range
+http://localhost:8002/user/?start_date=2014-10-11T17:02:54&end_date=2014-10-12T17:02:55
+
+# Get OS Stats
+http://localhost:8002/stats/os
+
+# Get Browser Stats
+http://localhost:8002/stats/browser
+
+
+```
+
+
 ### Stopping the micro-cluster
 
 ```bash
@@ -94,5 +120,3 @@ docker-compose down
 ## Credit to aminelemaiz for developing YARN microcluster
 
 For more details about this project please refer to [article](https://lemaizi.com/blog/creating-your-own-micro-cluster-lab-using-docker-to-experiment-with-spark-dask-on-yarn/)
-
-

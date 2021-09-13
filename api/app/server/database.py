@@ -25,9 +25,7 @@ def user_helper(user) -> dict:
     }
     return result
 
-
-# crud operations
-
+##CRUD
 # Retrieve all users present in the database
 async def retrieve_users():
     users = []
@@ -36,6 +34,46 @@ async def retrieve_users():
         print(user_fmt)
         users.append(user_fmt)
     return users
+
+
+# Calculate percentage of field
+async def mongoql_calculate_percentage(field):
+
+    nums = await results_collection.count_documents({})
+    stats_result = results_collection.aggregate(
+    [
+       {
+         "$group" : {
+            "_id" : f"${field}",
+            "count": { "$sum": 1 }
+         }
+       },
+       { "$project": { 
+            "count": 1, 
+            "percentage": { 
+                "$concat": [ { "$substr": [ { "$multiply": [ { "$divide": [ "$count", {"$literal": nums }] }, 100 ] }, 0,2 ] }, "", "%" ]}
+            }
+       }
+    ]
+    )
+    return stats_result
+
+
+# Retrieve os %
+async def retrieve_os_stats():
+    os_percentages = []
+    percent_stats = await mongoql_calculate_percentage("os")
+    async for os_percent in percent_stats:
+        os_percentages.append(os_percent)
+    return os_percentages
+
+# Retrieve browser %
+async def retrieve_browser_stats():
+    browser_percentages = []
+    percent_stats = await mongoql_calculate_percentage("browser")
+    async for browser_percent in percent_stats:
+        browser_percentages.append(browser_percent)
+    return browser_percentages
 
 
 # Add a new user into to the database
