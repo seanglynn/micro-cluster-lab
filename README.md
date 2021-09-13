@@ -4,11 +4,15 @@
 1. Downloaded geoip datasets from:
 [geoip datasets downloads](https://www.maxmind.com/en/accounts/*/geoip/downloads)
 
-2. Drop data into */root/lab/datasets/*
+2. Drop data into datasets folder:
+```bash
+datasets/public
+datasets/private
+```
 
-3. Exec Geolookup
+3. [Exec Geolookup](https://github.com/seanglynn/micro-cluster-lab/blob/master/notebooks/GeoLookup.ipynb)
    
-4. Exec PySparkYieldData
+4. [Exec PySparkYieldData](https://github.com/seanglynn/micro-cluster-lab/blob/master/notebooks/PySparkYieldData.ipynb)
 
 5. Hit API http://localhost:8002/
 
