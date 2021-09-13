@@ -88,9 +88,30 @@ UserGeo Mongo API:
 http://localhost:8002/
 
 
+### REST Requests
+
+```
+# Get All Users in collection
+http://127.0.0.1:8002/user
+
+# Get Users within time range
+http://localhost:8002/user/?start_date=2014-10-11T17:02:54&end_date=2014-10-12T17:02:55
+
+# Get OS Stats
+http://127.0.0.1:8002/stats/os
+
+# Get Browser Stats
+http://127.0.0.1:8002/stats/browser
+
+
+
+```
+
+
 ### Stopping the micro-cluster
 
 ```bash
 docker-compose down
 ```
+
 
