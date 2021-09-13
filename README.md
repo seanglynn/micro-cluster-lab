@@ -1,9 +1,5 @@
 # Micro-Cluster Lab Using Docker, To Experiment With Spark & Dask on Yarn
 
-## Credit to aminelemaiz
-
-For more details about this project please refer to [article](https://lemaizi.com/blog/creating-your-own-micro-cluster-lab-using-docker-to-experiment-with-spark-dask-on-yarn/)
-
 
 ### Get Started
 
@@ -93,4 +89,10 @@ http://localhost:8002/
 ```bash
 docker-compose down
 ```
+
+
+## Credit to aminelemaiz for developing YARN microcluster
+
+For more details about this project please refer to [article](https://lemaizi.com/blog/creating-your-own-micro-cluster-lab-using-docker-to-experiment-with-spark-dask-on-yarn/)
+
 
