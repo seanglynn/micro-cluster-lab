@@ -6,6 +6,7 @@ from app.server.database import (
     delete_user,
     retrieve_user,
     retrieve_users,
+    retrieve_users_ts,
     update_user,
 )
 from app.server.models.user import (
@@ -28,6 +29,7 @@ async def add_user_data(user: UserSchema = Body(...)):
 @router.get("/", response_description="Users retrieved")
 async def get_users():
     users = await retrieve_users()
+    # print(users)
     if users:
         return ResponseModel(users, "Users data retrieved successfully")
     return ResponseModel(users, "Empty list returned")
@@ -35,10 +37,22 @@ async def get_users():
 
 @router.get("/{id}", response_description="User data retrieved")
 async def get_user_data(id):
+    print(id)
     user = await retrieve_user(id)
     if user:
         return ResponseModel(user, "User data retrieved successfully")
     return ErrorResponseModel("An error occurred.", 404, "User doesn't exist.")
+
+
+@router.get("/start_date={ts_start}&end_date={ts_end}", response_description="User data retrieved")
+async def get_user_data_ts(ts_start, ts_end):
+    print(ts_start)
+    print(ts_end)
+    users_ts = await retrieve_users_ts(ts_start, ts_end)
+    if users_ts:
+        return ResponseModel(users_ts, "User data retrieved successfully")
+    return ErrorResponseModel("An error occurred.", 404, "User doesn't exist.")
+
 
 
 @router.put("/{id}")

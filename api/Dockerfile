@@ -4,7 +4,7 @@
 FROM python:3.6.9-alpine
 
 # set work directory
-WORKDIR /usr/src/app
+WORKDIR /usr/src
 
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -13,7 +13,7 @@ ENV PYTHONUNBUFFERED 1
 # copy requirements file
 COPY ./requirements.txt /usr/src/app/requirements.txt
 # copy project
-COPY ./* /usr/src/app/
+COPY ./* /usr/src/app
 # TODO: 
 COPY . /
 
@@ -29,5 +29,6 @@ RUN set -eux \
 
 EXPOSE 8000
 
-CMD gunicorn main:app -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0
+# CMD gunicorn main:app -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0
 # CMD gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0
+CMD uvicorn app.server.app:app --host 0.0.0.0 --port=8000
