@@ -1,13 +1,8 @@
 # Micro-Cluster Lab Using Docker, To Experiment With Spark & Dask on Yarn
 
-## Credit to aminelemaiz
-
-For more details about this project please refer to [article](https://lemaizi.com/blog/creating-your-own-micro-cluster-lab-using-docker-to-experiment-with-spark-dask-on-yarn/)
-
 
 ### Get Started
-
-Downloaded geoip datasets from:
+1. Downloaded geoip datasets from:
 [geoip datasets downloads](https://www.maxmind.com/en/accounts/*/geoip/downloads)
 
 ### Project Folder Tree
@@ -50,19 +45,19 @@ Downloaded geoip datasets from:
 ```
 
 ### Run Microcluster
-
+Builds containers and spins up docker-compose
 ```bash
 ./bin/restart-etl-service.sh
 ```
 
 ### Create the compute container image
-
+Manually build cluster base image
 ```bash
 docker build . -t cluster-base
 ```
 
 ### Create the api container image
-
+Manually build api image
 ```bash
 docker build ./api -t api
 ```
@@ -90,7 +85,7 @@ http://localhost:8002/
 
 ### REST Requests
 
-```
+```bash
 # Get All Users in collection
 http://127.0.0.1:8002/user
 
@@ -104,7 +99,6 @@ http://127.0.0.1:8002/stats/os
 http://127.0.0.1:8002/stats/browser
 
 
-
 ```
 
 
@@ -115,3 +109,6 @@ docker-compose down
 ```
 
 
+## Credit to aminelemaiz for developing YARN microcluster
+
+For more details about this project please refer to [article](https://lemaizi.com/blog/creating-your-own-micro-cluster-lab-using-docker-to-experiment-with-spark-dask-on-yarn/)
