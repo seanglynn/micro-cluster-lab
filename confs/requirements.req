@@ -8,3 +8,5 @@ pandas
 findspark
 dask-yarn
 bash_kernel
+pyarrow 
+pymongo

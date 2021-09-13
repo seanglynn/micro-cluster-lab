@@ -54,7 +54,6 @@ RUN ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa && \
 COPY confs/config /root/.ssh
 RUN chmod 600 /root/.ssh/config
 
-RUN pip3 install --upgrade pyarrow pgeocode pymongo
 
 COPY confs/*.xml /opt/hadoop/etc/hadoop/
 COPY confs/hadoop-env.sh /opt/hadoop/etc/hadoop/

@@ -7,11 +7,26 @@ For more details about this project please refer to [article](https://lemaizi.co
 
 ### Get Started
 
+Downloaded geoip datasets from:
+[geoip datasets downloads](https://www.maxmind.com/en/accounts/*/geoip/downloads)
+
 ### Project Folder Tree
 
 ```
 ├── docker-compose.yml
 ├── Dockerfile
+├── api
+│   ├── server
+    │   ├── models/
+    │   └── routes/
+    │   └── app.py
+    │   └── database.py
+│   ├── main.py
+├── bin
+│   ├── fetch-data.sh
+│   ├── restart-etl-service.sh
+│   ├── secure-image.sh
+│   ├── run-adhoc-notebook.sh
 ├── confs
 │   ├── config
 │   ├── core-site.xml
@@ -34,35 +49,48 @@ For more details about this project please refer to [article](https://lemaizi.co
     └── bootstrap.sh
 ```
 
+### Run Microcluster
 
+```bash
+./bin/restart-etl-service.sh
+```
 
-### Create the base container image
+### Create the compute container image
 
 ```bash
 docker build . -t cluster-base
 ```
 
-### Run the cluster or micro-lab
+### Create the api container image
 
 ```bash
-docker-compose up -d
+docker build ./api -t api
 ```
 
-### Yarn resource manager UI
+### UI's
 
-Access the Yarn resource manager UI using the following link : http://localhost:8088/cluster/nodes
+YARN:
+http://localhost:8088/cluster/nodes
 
-![yarn ui](img/yarn_rm_ui.png)
+Jupyter Notebook:
+http://localhost:8888/
 
-### Jupyter Notebook with starters notebooks
+Mongo Express DB Viewer:
+http://localhost:8081/db/local
 
-Access Jupyter Notebook using this link : http://localhost:8888/
+Jupyter Notebook:
+http://localhost:8888/
 
-<img src="img/docker_jupyter.png" alt="jupyter" style="zoom:50%;" />
+Jupyter Notebook:
+http://localhost:8888/
 
-### Stopping the micro-lab
+UserGeo Mongo API:
+http://localhost:8002/
 
-```
+
+### Stopping the micro-cluster
+
+```bash
 docker-compose down
 ```
 

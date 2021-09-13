@@ -43,11 +43,29 @@ services:
       cluster-network:
         aliases: 
           - node-slave2
+  api:
+    build: ./api
+    command: uvicorn app.server.app:app --reload --host 0.0.0.0 --port=8000
+    volumes:
+      - ./api/app/:/usr/src/app/
+    ports:
+      - 8002:8000
+    image: api:latest
+    container_name: mongo-api
+    hostname: mongo-api
+    environment:
+      MONGO_DETAILS: mongodb://root:yurt@mongo:27017
+    networks:
+      cluster-network:
+        aliases: 
+          - mongo-api
   mongo:
     image: mongo
     restart: always
     volumes:
       - persist-db:/data/db
+    ports:
+      - 27017:27017
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: yurt
