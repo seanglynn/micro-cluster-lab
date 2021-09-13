@@ -1,4 +1,4 @@
-# MicroDataCluster with Data API Using Docker (Spark, YARN, HDFS, MongoDB, FastAPI, )
+# MicroDataCluster with Data API Using Docker (Spark, YARN, HDFS, MongoDB, FastAPI)
 
 ### Get Started
 1. Downloaded geoip datasets from:
