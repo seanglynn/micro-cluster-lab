@@ -29,6 +29,4 @@ RUN set -eux \
 
 EXPOSE 8000
 
-# CMD gunicorn main:app -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0
-# CMD gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0
 CMD uvicorn app.server.app:app --host 0.0.0.0 --port=8000

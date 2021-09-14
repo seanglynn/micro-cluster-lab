@@ -11,11 +11,13 @@ datasets/private
 ```
 
 3. [Exec Geolookup](https://github.com/seanglynn/micro-cluster-lab/blob/master/notebooks/GeoLookup.ipynb)
-   
+Geolocation data will be parsed, stored in memory for lookup and written out to Mongo.
+
 4. [Exec PySparkYieldData](https://github.com/seanglynn/micro-cluster-lab/blob/master/notebooks/PySparkYieldData.ipynb)
+Input dataset is joined with geolocation lookup DF and results are returned.
 
 5. Hit API http://localhost:8002/
-
+Query mongo data api to retreive results
 
 ### Project Folder Tree
 
