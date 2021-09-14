@@ -1,8 +1,10 @@
 # MicroDataCluster with Data API Using Docker (Spark, YARN, HDFS, MongoDB, FastAPI)
 
 ### Get Started
-1. Downloaded geoip datasets from:
-[geoip datasets downloads](https://www.maxmind.com/en/accounts/*/geoip/downloads)
+1. Register and Download geoip datasets from:
+[geoip datasets downloads](https://www.maxmind.com/en/accounts/*/geoip/downloads). Files to download:
+   - GeoLite2 City: CSV Format	
+   - GeoLite2 Country: CSV Format	
 
 2. Drop data into datasets folder:
 ```bash
@@ -11,10 +13,10 @@ datasets/private
 ```
 
 3. [Exec Geolookup](https://github.com/seanglynn/micro-cluster-lab/blob/master/notebooks/GeoLookup.ipynb)
-- Geolocation data will be parsed, stored in memory for lookup and written out to Mongo.
+   - Geolocation data will be parsed, stored in memory for lookup and written out to Mongo.
 
 4. [Exec PySparkYieldData](https://github.com/seanglynn/micro-cluster-lab/blob/master/notebooks/PySparkYieldData.ipynb)
-- Input dataset is joined with geolocation lookup DF and results are returned.
+   - Input dataset is joined with geolocation lookup DF and results are returned.
 
 5. Hit API http://localhost:8002/
    - Query mongo data api to retreive results
