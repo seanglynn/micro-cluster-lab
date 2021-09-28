@@ -9,44 +9,86 @@ ENV HADOOP_HOME /opt/hadoop
 ENV HADOOP_CONF_DIR /opt/hadoop/etc/hadoop
 # and same for spark
 ENV SPARK_HOME /opt/spark
-# with this we can run all hadoop and spark scripts and commands directly from the shell
-# without using the absolute path
+
 ENV PATH="${HADOOP_HOME}/bin:${HADOOP_HOME}/sbin:${SPARK_HOME}/bin:${SPARK_HOME}/sbin:${PATH}"
-# just informing the hadoop version, this isn't really necessary
-ENV HADOOP_VERSION 3.2.2
-# if you happend to run pyspark from shell, it will launch it on a Jupyter Notebook
-# this is just two fancy lines, really no need for it
+
+ENV HADOOP_VERSION=3.2.2
+ENV SPARK_VERSION=3.1.2
 ENV PYSPARK_DRIVER_PYTHON=jupyter
 ENV PYSPARK_DRIVER_PYTHON_OPTS='notebook'
+
 # showing pyspark which "python" command to use
 ENV PYSPARK_PYTHON=python3
 
+# Elephant props
 ENV HDFS_NAMENODE_USER=root
 ENV HDFS_DATANODE_USER=root
 ENV HDFS_SECONDARYNAMENODE_USER=root
 ENV YARN_RESOURCEMANAGER_USER=root
 ENV YARN_NODEMANAGER_USER=root
 
+# OS props
 RUN apt-get update && \
     apt-get install -y wget nano openjdk-8-jdk ssh openssh-server build-essential
-RUN apt update && apt install -y python3 python3-pip python3-dev build-essential libssl-dev libffi-dev libpq-dev 
+RUN apt update && apt install -y python3 python3-pip python3-dev libssl-dev libffi-dev libpq-dev nodejs curl bzip2 \
+    && curl -sSL https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -o /tmp/miniconda.sh \
+    && bash /tmp/miniconda.sh -bfp /usr/local \
+    && rm -rf /tmp/miniconda.sh \
+    && conda install -y python=3 \
+    && conda update conda \
+    && apt-get -qq -y remove curl bzip2 \
+    && apt-get -qq -y autoremove \
+    && apt-get autoclean \
+    && rm -rf /var/lib/apt/lists/* /var/log/dpkg.log \
+    && conda clean --all --yes \
+    && conda config --append channels conda-forge
 
+ENV PATH /opt/conda/bin:$PATH
 
+# Dask props
+ENV DASK_VERSION=0.8.0
+
+# Jupyter deps
 COPY confs/requirements.req /
-RUN pip3 install --upgrade pip
-RUN pip3 install -r requirements.req
-RUN pip3 install dask[bag] --upgrade
-RUN pip3 install --upgrade toree
-RUN pip3 install --upgrade jupyter-server-proxy 
+RUN conda install --file requirements.req
+RUN conda install -y dask[bag]==${DASK_VERSION} 
+RUN conda install -y toree
+RUN conda install -y dask_labextension
 RUN python3 -m bash_kernel.install
 
-RUN wget -P /tmp/ https://archive.apache.org/dist/hadoop/common/hadoop-3.2.2/hadoop-3.2.2.tar.gz
-RUN tar xvf /tmp/hadoop-3.2.2.tar.gz -C /tmp && \
-  mv /tmp/hadoop-3.2.2 /opt/hadoop
+# Dask deps
+RUN conda install -y cmake \
+    cytoolz \
+    lz4 \
+    numpy \
+    pandas \
+    ipywidgets \
+    cachey \
+    streamz \
+    dask-labextension \
+    jupyter-server-proxy 
+    # numpy==1.21.1 \
+    # pandas==1.3.0 \
 
-RUN wget -P /tmp/ https://dlcdn.apache.org/spark/spark-3.1.2/spark-3.1.2-bin-hadoop3.2.tgz
-RUN tar xvf /tmp/spark-3.1.2-bin-hadoop3.2.tgz -C /tmp && \
-    mv /tmp/spark-3.1.2-bin-hadoop3.2 ${SPARK_HOME}
+# RUN apt install -y nodejs npm conda
+# RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+# RUN chmod +x Miniconda3-latest-Linux-x86_64.sh
+RUN conda install -y npm nodejs
+RUN jupyter labextension install dask-labextension
+
+RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
+    mkdir -p /usr/local/bin && \
+    mv ./kubectl /usr/local/bin/kubectl && \
+    chmod +x /usr/local/bin/kubectl && \
+    kubectl version --client
+
+RUN wget -P /tmp/ https://archive.apache.org/dist/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz
+RUN tar xvf /tmp/hadoop-${HADOOP_VERSION}.tar.gz -C /tmp && \
+  mv /tmp/hadoop-${HADOOP_VERSION} /opt/hadoop
+
+RUN wget -P /tmp/ https://dlcdn.apache.org/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop3.2.tgz
+RUN tar xvf /tmp/spark-${SPARK_VERSION}-bin-hadoop3.2.tgz -C /tmp && \
+    mv /tmp/spark-${SPARK_VERSION}-bin-hadoop3.2 ${SPARK_HOME}
 
 RUN ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa && \
   cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys && \

@@ -46,9 +46,9 @@ async def get_user_data(id):
     return ErrorResponseModel("An error occurred.", 404, "User doesn't exist.")
 
 
-@router.get("/start_date={ts_start}&end_date={ts_end}", response_description="User data retrieved")
+@router.get("/search?start_date={ts_start}&end_date={ts_end}", response_description="User data retrieved")
 async def get_user_data_ts(ts_start, ts_end):
-    users_ts = await retrieve_users_ts(ts_start, ts_end)
+    users_ts = await retrieve_users_ts(ts_start, 5)
     if users_ts:
         return ResponseModel(users_ts, "User data retrieved successfully")
     return ErrorResponseModel("An error occurred.", 404, "User doesn't exist.")
