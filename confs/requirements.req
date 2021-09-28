@@ -10,3 +10,11 @@ dask-yarn
 bash_kernel
 pyarrow 
 pymongo
+fastapi
+motor
+pydantic[email]
+python-decouple==3.3
+uvicorn
+cachey
+dask-labextension
+jupyter-server-proxy

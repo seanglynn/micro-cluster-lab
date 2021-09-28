@@ -27,7 +27,10 @@ ENV HDFS_SECONDARYNAMENODE_USER=root
 ENV YARN_RESOURCEMANAGER_USER=root
 ENV YARN_NODEMANAGER_USER=root
 
-# OS props
+# K8S props
+ENV K8S_VERSION=1.22.0
+
+# OS deps
 RUN apt-get update && \
     apt-get install -y wget nano openjdk-8-jdk ssh openssh-server build-essential
 RUN apt update && apt install -y python3 python3-pip python3-dev libssl-dev libffi-dev libpq-dev nodejs curl bzip2 \
@@ -35,13 +38,7 @@ RUN apt update && apt install -y python3 python3-pip python3-dev libssl-dev libf
     && bash /tmp/miniconda.sh -bfp /usr/local \
     && rm -rf /tmp/miniconda.sh \
     && conda install -y python=3 \
-    && conda update conda \
-    && apt-get -qq -y remove curl bzip2 \
-    && apt-get -qq -y autoremove \
-    && apt-get autoclean \
-    && rm -rf /var/lib/apt/lists/* /var/log/dpkg.log \
-    && conda clean --all --yes \
-    && conda config --append channels conda-forge
+    && conda update conda 
 
 ENV PATH /opt/conda/bin:$PATH
 
@@ -50,11 +47,6 @@ ENV DASK_VERSION=0.8.0
 
 # Jupyter deps
 COPY confs/requirements.req /
-RUN conda install --file requirements.req
-RUN conda install -y dask[bag]==${DASK_VERSION} 
-RUN conda install -y toree
-RUN conda install -y dask_labextension
-RUN python3 -m bash_kernel.install
 
 # Dask deps
 RUN conda install -y cmake \
@@ -63,20 +55,15 @@ RUN conda install -y cmake \
     numpy \
     pandas \
     ipywidgets \
-    cachey \
-    streamz \
-    dask-labextension \
-    jupyter-server-proxy 
-    # numpy==1.21.1 \
-    # pandas==1.3.0 \
+    streamz
 
-# RUN apt install -y nodejs npm conda
-# RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-# RUN chmod +x Miniconda3-latest-Linux-x86_64.sh
-RUN conda install -y npm nodejs
+RUN pip install -r requirements.req
+
+RUN conda install -y nodejs
 RUN jupyter labextension install dask-labextension
 
-RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
+
+RUN curl -LO https://dl.k8s.io/release/v${K8S_VERSION}/bin/linux/amd64/kubectl && \
     mkdir -p /usr/local/bin && \
     mv ./kubectl /usr/local/bin/kubectl && \
     chmod +x /usr/local/bin/kubectl && \
@@ -105,8 +92,14 @@ COPY script_files/bootstrap.sh /
 ENV JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64
 COPY confs/spark-defaults.conf ${SPARK_HOME}/conf
 
-RUN apt install -y unzip && \
-  rm -rf /tmp/*spark*gz
+RUN rm -rf /tmp/*spark*gz \
+    && apt-get -qq -y remove bzip2 \
+    && apt-get -qq -y autoremove \
+    && apt-get autoclean \
+    && rm -rf /var/lib/apt/lists/* /var/log/dpkg.log \
+    && conda clean --all --yes \
+    && conda config --append channels conda-forge \
+    && conda clean -afy 
 
 EXPOSE 9000
 EXPOSE 7077
