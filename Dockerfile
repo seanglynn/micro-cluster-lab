@@ -30,6 +30,13 @@ ENV YARN_NODEMANAGER_USER=root
 # K8S props
 ENV K8S_VERSION=1.22.0
 
+
+# Dask props
+ENV DASK_VERSION=0.8.0
+
+# deps
+COPY confs/requirements.req /
+
 # OS deps
 RUN apt-get update && \
     apt-get install -y wget nano openjdk-8-jdk ssh openssh-server build-essential
@@ -41,12 +48,6 @@ RUN apt update && apt install -y python3 python3-pip python3-dev libssl-dev libf
     && conda update conda 
 
 ENV PATH /opt/conda/bin:$PATH
-
-# Dask props
-ENV DASK_VERSION=0.8.0
-
-# Jupyter deps
-COPY confs/requirements.req /
 
 # Dask deps
 RUN conda install -y cmake \
@@ -100,6 +101,16 @@ RUN rm -rf /tmp/*spark*gz \
     && conda clean --all --yes \
     && conda config --append channels conda-forge \
     && conda clean -afy 
+
+RUN apt-get update \
+    && apt-get install -yq --no-install-recommends curl graphviz git \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+    
+# RUN apt install software-properties-common \
+#     && add-apt-repository universe \
+#     && apt update -y \
+#     && apt-get install -y python-pydot python-pydot-ng graphviz
 
 EXPOSE 9000
 EXPOSE 7077

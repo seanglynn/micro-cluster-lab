@@ -32,9 +32,17 @@ services:
       - "8786:8786"
       - "8787:8787"
     command: ["dask-scheduler"]
+    networks:
+      cluster-network:
+        aliases: 
+          - scheduler
   worker:
     image: daskdev/dask:latest
     command: ["dask-worker", "tcp://scheduler:8786"]
+    networks:
+      cluster-network:
+        aliases: 
+          - worker
 
   node-slave1:
     image: cluster-base:latest
