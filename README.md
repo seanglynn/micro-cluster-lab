@@ -108,7 +108,7 @@ http://localhost:8002/
 http://localhost:8002/user
 
 # Get Users within time range
-http://localhost:8002/user/?start_date=2014-10-11T17:02:54&end_date=2014-10-12T17:02:55
+http://localhost:8002/user?start_date=2014-10-11T17:02:54&end_date=2014-10-12T17:02:55
 
 # Get OS Stats
 http://localhost:8002/stats/os
