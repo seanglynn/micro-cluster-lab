@@ -2,6 +2,7 @@ import motor.motor_asyncio
 from bson.objectid import ObjectId
 from decouple import config
 import logging
+from datetime import datetime
 
 MONGO_DETAILS = config('MONGO_DETAILS') # read environment variable.
 
@@ -94,6 +95,9 @@ async def retrieve_user(id: str) -> dict:
             users.append(user_helper(document))
     return users
 
+
+
+
 # Retrieve a user between two timestamps
 async def retrieve_users_ts(ts_start: str, ts_end: str) -> dict:
     print(ts_start)
@@ -101,8 +105,8 @@ async def retrieve_users_ts(ts_start: str, ts_end: str) -> dict:
     users_ts = []
     cursor = await results_collection.find({
         'timestamp':{
-            '$gte':'{}'.format(ts_start),
-            '$lte':'{}'.format(ts_end)
+            '$gte': ts_start,
+            '$lte': ts_end
         }
     })
     for document in await cursor.to_list(length=100):

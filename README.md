@@ -24,7 +24,9 @@ datasets/private
 ### Project Folder Tree
 
 ```
-├── docker-compose.yml
+├── docker-compose-complete.yml
+├── docker-compose-dask.yml
+├── docker-compose-spark.yml
 ├── Dockerfile
 ├── api
 │   ├── server
@@ -35,7 +37,7 @@ datasets/private
 │   ├── main.py
 ├── bin
 │   ├── fetch-data.sh
-│   ├── restart-etl-service.sh
+│   ├── restart-cluster-service.sh
 │   ├── secure-image.sh
 │   ├── run-adhoc-notebook.sh
 ├── confs
@@ -63,7 +65,7 @@ datasets/private
 ### Run Microcluster
 Builds containers and spins up docker-compose cluster
 ```bash
-./bin/restart-etl-service.sh
+./bin/restart-cluster-service.sh --all
 ```
 
 ### Create the compute container image

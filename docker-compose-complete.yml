@@ -15,12 +15,35 @@ services:
       - "8080:8080"
       - "8042:8042"
       - "8888:8888"
+    environment:
+      - DASK_SCHEDULER_ADDRESS="tcp://scheduler:8786"
     volumes:
       - persist-data:/root/lab/
     networks:
       cluster-network:
         aliases: 
           - node-master
+  
+  # Dask integ
+  scheduler:
+    image: daskdev/dask:latest
+    hostname: scheduler
+    ports:
+      - "8786:8786"
+      - "8787:8787"
+    command: ["dask-scheduler"]
+    networks:
+      cluster-network:
+        aliases: 
+          - scheduler
+  worker:
+    image: daskdev/dask:latest
+    command: ["dask-worker", "tcp://scheduler:8786"]
+    networks:
+      cluster-network:
+        aliases: 
+          - worker
+
   node-slave1:
     image: cluster-base:latest
     container_name: node-slave1
@@ -43,6 +66,7 @@ services:
       cluster-network:
         aliases: 
           - node-slave2
+
   api:
     build: ./api
     command: uvicorn app.server.app:app --reload --host 0.0.0.0 --port=8000
