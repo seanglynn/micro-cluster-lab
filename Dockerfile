@@ -62,7 +62,7 @@ RUN pip install -r requirements.req
 
 RUN conda install -y nodejs
 RUN jupyter labextension install dask-labextension
-
+RUN apt-get install -yq --no-install-recommends curl graphviz git
 
 RUN curl -LO https://dl.k8s.io/release/v${K8S_VERSION}/bin/linux/amd64/kubectl && \
     mkdir -p /usr/local/bin && \
@@ -84,7 +84,6 @@ RUN ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa && \
 COPY confs/config /root/.ssh
 RUN chmod 600 /root/.ssh/config
 
-
 COPY confs/*.xml /opt/hadoop/etc/hadoop/
 COPY confs/hadoop-env.sh /opt/hadoop/etc/hadoop/
 COPY confs/slaves /opt/hadoop/etc/hadoop/
@@ -97,20 +96,11 @@ RUN rm -rf /tmp/*spark*gz \
     && apt-get -qq -y remove bzip2 \
     && apt-get -qq -y autoremove \
     && apt-get autoclean \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /var/log/dpkg.log \
     && conda clean --all --yes \
     && conda config --append channels conda-forge \
     && conda clean -afy 
-
-RUN apt-get update \
-    && apt-get install -yq --no-install-recommends curl graphviz git \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-    
-# RUN apt install software-properties-common \
-#     && add-apt-repository universe \
-#     && apt update -y \
-#     && apt-get install -y python-pydot python-pydot-ng graphviz
 
 EXPOSE 9000
 EXPOSE 7077

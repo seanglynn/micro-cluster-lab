@@ -1,0 +1,110 @@
+version: "3.3"
+services:
+  node-master:
+    depends_on:
+      - worker1
+      - worker2
+    image: cluster-base:latest
+    container_name: node-master
+    hostname: node-master
+    tty: true
+    ports:
+      - "8088:8088"
+      - "50070:50070"
+      - "50030:50030"
+      - "8080:8080"
+      - "8042:8042"
+      - "8888:8888"
+    environment:
+      - DASK_SCHEDULER_ADDRESS="tcp://scheduler:8786"
+    volumes:
+      - persist-data:/root/lab/
+    networks:
+      cluster-network:
+        aliases: 
+          - node-master
+  
+  # Dask integ
+  scheduler:
+    image: daskdev/dask:latest
+    container_name: scheduler
+    hostname: scheduler
+    ports:
+      - "8786:8786"
+      - "8787:8787"
+    command: ["dask-scheduler"]
+    networks:
+      cluster-network:
+        aliases: 
+          - scheduler
+  worker1:
+    image: daskdev/dask:latest
+    container_name: worker1
+    hostname: worker1
+    command: ["dask-worker", "tcp://scheduler:8786"]
+    networks:
+      cluster-network:
+        aliases: 
+          - worker1
+
+  worker2:
+    image: daskdev/dask:latest
+    container_name: worker2
+    hostname: worker2
+    command: ["dask-worker", "tcp://scheduler:8786"]
+    networks:
+      cluster-network:
+        aliases: 
+          - worker2
+
+  api:
+    build: ./api
+    command: uvicorn app.server.app:app --reload --host 0.0.0.0 --port=8000
+    volumes:
+      - ./api/app/:/usr/src/app/
+    ports:
+      - 8002:8000
+    image: api:latest
+    container_name: mongo-api
+    hostname: mongo-api
+    environment:
+      MONGO_DETAILS: mongodb://root:yurt@mongo:27017
+    networks:
+      cluster-network:
+        aliases: 
+          - mongo-api
+  mongo:
+    image: mongo
+    restart: always
+    volumes:
+      - persist-db:/data/db
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: yurt
+    networks:
+      cluster-network:
+        aliases: 
+          - mongo
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: yurt
+      ME_CONFIG_MONGODB_URL: mongodb://root:yurt@mongo:27017/
+    networks:
+      cluster-network:
+        aliases: 
+          - mongo-express
+volumes:
+  persist-data:
+  persist-db:
+networks:
+  cluster-network:
+    driver: bridge
+    ipam:
+      driver: default
