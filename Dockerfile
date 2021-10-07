@@ -12,6 +12,7 @@ ENV SPARK_HOME /opt/spark
 
 ENV PATH="${HADOOP_HOME}/bin:${HADOOP_HOME}/sbin:${SPARK_HOME}/bin:${SPARK_HOME}/sbin:${PATH}"
 
+ENV PYTHON_VERSION=3.8
 ENV HADOOP_VERSION=3.2.2
 ENV SPARK_VERSION=3.1.2
 ENV PYSPARK_DRIVER_PYTHON=jupyter
@@ -44,7 +45,7 @@ RUN apt update && apt install -y python3 python3-pip python3-dev libssl-dev libf
     && curl -sSL https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -o /tmp/miniconda.sh \
     && bash /tmp/miniconda.sh -bfp /usr/local \
     && rm -rf /tmp/miniconda.sh \
-    && conda install -y python=3 \
+    && conda install -y python=${PYTHON_VERSION} \
     && conda update conda 
 
 ENV PATH /opt/conda/bin:$PATH
@@ -53,8 +54,6 @@ ENV PATH /opt/conda/bin:$PATH
 RUN conda install -y cmake \
     cytoolz \
     lz4 \
-    numpy \
-    pandas \
     ipywidgets \
     streamz
 
@@ -92,6 +91,13 @@ COPY script_files/bootstrap.sh /
 ENV JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64
 COPY confs/spark-defaults.conf ${SPARK_HOME}/conf
 
+# 1/2 more things
+RUN apt install -y software-properties-common
+RUN add-apt-repository universe
+RUN apt-get update
+#TODO Net tools - Remove
+RUN apt-get install  -y iputils-* netcat
+
 RUN rm -rf /tmp/*spark*gz \
     && apt-get -qq -y remove bzip2 \
     && apt-get -qq -y autoremove \
@@ -107,6 +113,8 @@ EXPOSE 7077
 EXPOSE 4040
 EXPOSE 8020
 EXPOSE 22
+EXPOSE 8786
+EXPOSE 8787
 
 RUN mkdir -p /root/lab/datasets
 COPY datasets/public/* /root/lab/datasets/
