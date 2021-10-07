@@ -36,6 +36,7 @@ datasets/private
     │   └── database.py
 │   ├── main.py
 ├── bin
+│   ├── debug-cluster-base.sh
 │   ├── fetch-data.sh
 │   ├── restart-cluster-service.sh
 │   ├── secure-image.sh
