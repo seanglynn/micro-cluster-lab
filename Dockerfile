@@ -113,8 +113,6 @@ EXPOSE 7077
 EXPOSE 4040
 EXPOSE 8020
 EXPOSE 22
-EXPOSE 8786
-EXPOSE 8787
 
 RUN mkdir -p /root/lab/datasets
 COPY datasets/public/* /root/lab/datasets/
