@@ -1,5 +1,7 @@
 #/bin/$SHELL
 
+set -e
+
 case $1 in
     -a|--all) cluster="complete"            
     ;;
@@ -14,6 +16,10 @@ case $1 in
 esac
 shift
 
-echo docker-compose-${cluster}.yml
-docker build . -t cluster-base
-docker-compose -f docker-compose-${cluster}.yml up --build
+compose_yaml="docker-compose-${cluster}.yml"
+
+echo "Clean-deploying: ${compose_yaml}"
+docker system prune -f
+
+docker build . --force-rm -t cluster-base 
+docker-compose -f $compose_yaml up --build
